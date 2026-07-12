@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FamPay Paynet Gateway Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0b0f1e, #1a1f30);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 40px 35px;
+            max-width: 520px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            transition: 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 215, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #f0e9d8;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .subhead {
+            color: #9aa3b8;
+            font-size: 14px;
+            border-left: 3px solid #fbbf24;
+            padding-left: 14px;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .key-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 16px 20px;
+            border: 1px solid #2d3347;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .key-display span {
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            word-break: break-all;
+        }
+
+        .key-display .badge {
+            background: #10b981;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #0b0f1e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .field-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #b9c2d9;
+            margin-bottom: 6px;
+            letter-spacing: 0.3px;
+        }
+
+        input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #2d3347;
+            border-radius: 18px;
+            padding: 14px 18px;
+            color: #f0f4ff;
+            font-size: 15px;
+            outline: none;
+            transition: 0.25s ease;
+        }
+
+        input:focus {
+            border-color: #fbbf24;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.15);
+        }
+
+        input::placeholder {
+            color: #54607a;
+            font-weight: 300;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .input-row input {
+            flex: 1;
+        }
+
+        .btn {
+            background: #fbbf24;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 15px;
+            color: #0b0f1e;
+            cursor: pointer;
+            transition: 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+            border: 1px solid transparent;
+            min-width: 120px;
+        }
+
+        .btn:hover {
+            background: #fcd34d;
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px -8px rgba(251, 191, 36, 0.3);
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid #3f465e;
+            color: #d1d9ed;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #6b7a9e;
+            box-shadow: none;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: #0b0f1e;
+        }
+
+        .btn-success:hover {
+            background: #34d399;
+        }
+
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 12px;
+            justify-content: center;
+        }
+
+        .qr-container {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin: 25px 0 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+            background: #0f1422;
+            border: 1px dashed #334155;
+            transition: 0.3s ease;
+        }
+
+        .qr-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 16px;
+            background: white;
+            padding: 8px;
+        }
+
+        .qr-placeholder {
+            color: #6b7a9e;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .status-box {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
+            padding: 16px 20px;
+            margin-top: 20px;
+            border-left: 4px solid #fbbf24;
+            color: #d1d9ed;
+            font-size: 14px;
+            line-height: 1.6;
+            word-break: break-all;
+        }
+
+        .status-box .label {
+            color: #8892b0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-box .value {
+            font-weight: 500;
+            color: #f0f4ff;
+        }
+
+        .min-hint {
+            color: #6b7a9e;
+            font-size: 12px;
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #2d3347, transparent);
+            margin: 24px 0;
+        }
+
+        .flex-center {
+            display: flex;
+            justify-content: center;
+        }
+
+        .gap-2 {
+            gap: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .glass-card {
+                padding: 28px 18px;
+            }
+            .input-row {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .action-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="glass-card">
+    <h1>
+        <span>💳</span> Paynet · FamPay
+    </h1>
+    <div class="subhead">⚡ test gateway · sandbox ready</div>
+
+    <!-- Gmail Key (pre-filled) -->
+    <div class="key-display">
+        <span id="gmailKeyDisplay">aman123450111@gmail.com</span>
+        <span class="badge">active</span>
+    </div>
+
+    <!-- hidden field for API key -->
+    <input type="hidden" id="gmailKey" value="rsvmellG0" />
+
+    <!-- Amount input -->
+    <div class="field-group">
+        <label for="amountInput">💸 Amount (₹)</label>
+        <div class="input-row">
+            <input type="number" id="amountInput" value="1" min="1" step="1" placeholder="Enter amount" />
+            <span style="color:#6b7a9e; font-size:13px; min-width:40px;">min ₹1</span>
+        </div>
+        <div class="min-hint">🔹 minimum amount: ₹1</div>
+    </div>
+
+    <!-- Generate QR -->
+    <div class="action-row">
+        <button class="btn" id="generateBtn">📱 Generate QR</button>
+        <button class="btn btn-secondary" id="verifyBtn">🔍 Verify Payment</button>
+    </div>
+
+    <!-- QR Code Display -->
+    <div class="qr-container" id="qrContainer">
+        <div class="qr-placeholder" id="qrPlaceholder">
+            <span style="display:block; font-size:40px; margin-bottom:6px;">◧</span>
+            QR code will appear here
+        </div>
+        <img id="qrImage" style="display:none; max-width:220px;" alt="QR Code" />
+    </div>
+
+    <!-- Order ID (auto-filled) -->
+    <div class="field-group" style="margin-top: 8px;">
+        <label for="orderIdInput">🧾 Order ID</label>
+        <input type="text" id="orderIdInput" placeholder="Will be generated after QR" readonly style="background: rgba(0,0,0,0.2); color:#8892b0;" />
+    </div>
+
+    <!-- Status / Response box -->
+    <div class="status-box" id="statusBox">
+        <div class="label">📡 response</div>
+        <div id="responseContent" class="value" style="margin-top:4px;">waiting for action...</div>
+    </div>
+
+    <hr />
+
+    <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+        <button class="btn btn-secondary" style="padding:10px 22px; font-size:13px;" id="clearBtn">⟲ Clear</button>
+        <span style="color:#4a556e; font-size:12px; display:flex; align-items:center;">🔐 sandbox · rsvmellG0</span>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // DOM elements
+        const gmailKey = document.getElementById('gmailKey').value;
+        const amountInput = document.getElementById('amountInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const qrImage = document.getElementById('qrImage');
+        const qrPlaceholder = document.getElementById('qrPlaceholder');
+        const qrContainer = document.getElementById('qrContainer');
+        const orderIdInput = document.getElementById('orderIdInput');
+        const responseContent = document.getElementById('responseContent');
+        const clearBtn = document.getElementById('clearBtn');
+        const gmailKeyDisplay = document.getElementById('gmailKeyDisplay');
+
+        // display email
+        gmailKeyDisplay.textContent = 'aman123450111@gmail.com';
+
+        // helpers
+        function setResponse(text, isError = false) {
+            responseContent.innerHTML = text;
+            if (isError) {
+                responseContent.style.color = '#f87171';
+            } else {
+                responseContent.style.color = '#f0f4ff';
+            }
+        }
+
+        function showQR(imageUrl) {
+            qrImage.src = imageUrl;
+            qrImage.style.display = 'block';
+            qrPlaceholder.style.display = 'none';
+        }
+
+        function hideQR() {
+            qrImage.style.display = 'none';
+            qrPlaceholder.style.display = 'block';
+            qrImage.src = '';
+        }
+
+        // 🔥 SOLUTION 1: Use CORS Proxy
+        // Ye proxy CORS error ko bypass karega
+        const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+        // ya use karo: https://corsproxy.io/? 
+
+        // Generate QR
+        async function generateQR() {
+            const amount = parseInt(amountInput.value, 10);
+            if (isNaN(amount) || amount < 1) {
+                setResponse('⚠️ Please enter a valid amount (min ₹1)', true);
+                return;
+            }
+
+            // Direct API URL (original)
+            const baseUrl = 'https://paynet.fampay.in/qr-gen';
+            const directUrl = `${baseUrl}?amount=${amount}&gmail_key=${gmailKey}`;
+            
+            // Proxy URL (CORS bypass)
+            const proxyUrl = `${CORS_PROXY}${encodeURIComponent(directUrl)}`;
+
+            try {
+                setResponse('⏳ generating QR via proxy...');
+                hideQR();
+                orderIdInput.value = '';
+
+                // Try with proxy first
+                let response = await fetch(proxyUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'image/png, application/json',
+                    },
+                });
+
+                // Agar proxy fail ho to direct try karo
+                if (!response.ok) {
+                    // Try direct (might work if CORS is not strict)
+                    response = await fetch(directUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'image/png, application/json',
+                        },
+                    });
+                }
+
+                if (!response.ok) {
+                    let errorMsg = `❌ API error (${response.status})`;
+                    try {
+                        const errJson = await response.json();
+                        errorMsg = errJson.message || errorMsg;
+                    } catch {
+                        // ignore
+                    }
+                    setResponse(`❌ ${errorMsg}`, true);
+                    return;
+                }
+
+                // check content-type
+                const contentType = response.headers.get('content-type') || '';
+                if (contentType.includes('image')) {
+                    // It's an image
+                    const blob = await response.blob();
+                    const imageUrl = URL.createObjectURL(blob);
+                    showQR(imageUrl);
+
+                    // Try to get order_id from headers
+                    let orderId = response.headers.get('X-Order-Id') || response.headers.get('order-id') || null;
+                    
+                    if (!orderId) {
+                        // generate fallback order id
+                        orderId = 'ORD-' + Date.now().toString(36).toUpperCase();
+                        setResponse(`⚠️ QR generated! Using generated Order ID: ${orderId}`, false);
+                    } else {
+                        setResponse(`✅ QR generated! Order ID: ${orderId}`, false);
+                    }
+
+                    orderIdInput.value = orderId;
+                } else {
+                    // JSON response
+                    const text = await response.text();
+                    try {
+                        const json = JSON.parse(text);
+                        if (json.order_id) {
+                            orderIdInput.value = json.order_id;
+                            setResponse(`✅ QR generated. Order ID: ${json.order_id}`, false);
+                            if (json.qr_code || json.qr_url) {
+                                showQR(json.qr_code || json.qr_url);
+                            }
+                        } else {
+                            setResponse(`⚠️ Unexpected JSON: ${text}`, true);
+                        }
+                    } catch {
+                        setResponse(`⚠️ Unexpected response: ${text.substring(0, 80)}`, true);
+                    }
+                }
+            } catch (error) {
+                setResponse(`❌ Network error: ${error.message}. Try using VPN or different network.`, true);
+                hideQR();
+            }
+        }
+
+        // Verify payment
+        async function verifyPayment() {
+            const orderId = orderIdInput.value.trim();
+            if (!orderId) {
+                setResponse('⚠️ No Order ID. Generate QR first.', true);
+                return;
+            }
+
+            const baseUrl = 'https://paynet.fampay.in/verify';
+            const directUrl = `${baseUrl}?order_id=${orderId}&gmail_key=${gmailKey}`;
+            const proxyUrl = `${CORS_PROXY}${encodeURIComponent(directUrl)}`;
+
+            try {
+                setResponse('⏳ verifying payment ...');
+                
+                let response = await fetch(proxyUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    // Try direct
+                    response = await fetch(directUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                        },
+                    });
+                }
+
+                const data = await response.json();
+                if (response.ok) {
+                    let statusMsg = data.status || data.message || 'Payment verified';
+                    let paid = data.paid || data.status === 'paid' || data.status === 'success' || data.payment_status === 'success';
+                    if (paid) {
+                        setResponse(`✅ Payment Successful! Status: ${statusMsg}`, false);
+                    } else {
+                        setResponse(`⏳ Payment status: ${statusMsg} (not paid yet)`, false);
+                    }
+                    responseContent.innerHTML += `<br /><span style="font-size:12px; color:#8892b0;">${JSON.stringify(data, null, 2)}</span>`;
+                } else {
+                    setResponse(`❌ Verification failed: ${data.message || data.error || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                setResponse(`❌ Network error: ${error.message}`, true);
+            }
+        }
+
+        // Clear
+        function clearAll() {
+            hideQR();
+            orderIdInput.value = '';
+            setResponse('cleared. ready for next action.');
+            amountInput.value = '1';
+        }
+
+        // event listeners
+        generateBtn.addEventListener('click', generateQR);
+        verifyBtn.addEventListener('click', verifyPayment);
+        clearBtn.addEventListener('click', clearAll);
+
+        // Enter key support
+        amountInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                generateBtn.click();
+            }
+        });
+
+        setResponse('🔹 Enter amount & click Generate QR. Then Verify.');
+    })();
+</script>
+
+</body>
+</html>
